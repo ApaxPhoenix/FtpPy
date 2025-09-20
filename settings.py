@@ -40,7 +40,9 @@ class SSL:
     key: Optional[str] = None  # Path to client private key file for mutual TLS
     bundle: Optional[str] = None  # Path to custom CA bundle file for verification
     ciphers: Optional[str] = None  # Allowed SSL cipher suites string
-    context: Optional[Union[ssl.SSLContext, bool]] = None  # SSL context or False to disable
+    context: Optional[Union[ssl.SSLContext, bool]] = (
+        None  # SSL context or False to disable
+    )
 
     def __post_init__(self) -> None:
         """
@@ -65,7 +67,9 @@ class SSL:
         # Validate certificate and key file pairing
         # Both must be provided together for mutual TLS authentication
         if bool(self.cert) != bool(self.key):
-            raise ValueError("Both certificate and key must be provided together for mutual TLS")
+            raise ValueError(
+                "Both certificate and key must be provided together for mutual TLS"
+            )
 
         # Validate certificate file existence and readability
         if self.cert:
@@ -92,8 +96,12 @@ class SSL:
                 raise ValueError(f"CA bundle path is not a file: {self.bundle}")
 
         # Validate SSL context parameter type
-        if self.context is not None and not isinstance(self.context, (ssl.SSLContext, bool)):
-            raise ValueError("SSL context must be an SSLContext object, boolean, or None")
+        if self.context is not None and not isinstance(
+            self.context, (ssl.SSLContext, bool)
+        ):
+            raise ValueError(
+                "SSL context must be an SSLContext object, boolean, or None"
+            )
 
         # Security warning for disabled certificate verification
         if not self.verify:
@@ -102,16 +110,18 @@ class SSL:
                 "This makes connections vulnerable to man-in-the-middle attacks. "
                 "Only use this setting in development or trusted network environments.",
                 UserWarning,
-                stacklevel=3
+                stacklevel=3,
             )
 
         # Warn about potentially incompatible configuration
-        if self.context is False and any([self.cert, self.key, self.bundle, self.ciphers]):
+        if self.context is False and any(
+            [self.cert, self.key, self.bundle, self.ciphers]
+        ):
             warnings.warn(
                 "SSL context is explicitly disabled, but other SSL parameters are configured. "
                 "These parameters will be ignored.",
                 UserWarning,
-                stacklevel=3
+                stacklevel=3,
             )
 
         # Initialize SSL context based on validated configuration parameters
@@ -147,7 +157,9 @@ class SSL:
             except FileNotFoundError as error:
                 raise ValueError(f"Certificate or key file not found: {error}")
             except PermissionError as error:
-                raise ValueError(f"Permission denied accessing certificate files: {error}")
+                raise ValueError(
+                    f"Permission denied accessing certificate files: {error}"
+                )
 
         # Load custom CA bundle for certificate verification
         if self.bundle:

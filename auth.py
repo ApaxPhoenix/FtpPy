@@ -53,6 +53,7 @@ class Basic:
             # Create complete authorization header
             self.auth = f"Basic {encoded}"
 
+
 @dataclass
 class Guest:
     """
