@@ -1,5 +1,18 @@
+import warnings
 from dataclasses import dataclass
 import base64
+from typing import TypeVar, Callable, Awaitable, Any, Optional
+
+# Enhanced type definitions for improved type safety and clarity
+T = TypeVar("T")
+BasicAuthType = TypeVar("BasicAuthType", bound="Basic")
+GuestAuthType = TypeVar("GuestAuthType", bound="Guest")
+Username = str
+Password = str
+AuthHeader = str
+GuestKey = str
+CredentialsString = str
+Base64EncodedString = str
 
 
 @dataclass
@@ -27,9 +40,9 @@ class Basic:
               Auto-generated if not provided during initialization.
     """
 
-    user: str
-    password: str
-    auth: str = ""
+    user: Username
+    password: Password
+    auth: AuthHeader = ""
 
     def __post_init__(self) -> None:
         """
@@ -44,12 +57,32 @@ class Basic:
         Returns:
             None
         """
+        # Validate credentials before processing
+        if not self.user.strip():
+            raise ValueError("Username cannot be empty or whitespace")
+
+        if not self.password.strip():
+            raise ValueError("Password cannot be empty or whitespace")
+
+        # Security warnings for potentially weak credentials
+        if len(self.password) < 8:
+            warnings.warn(
+                "Password is shorter than 8 characters. "
+                "Consider using a stronger password for better security."
+            )
+
+        if self.password.lower() in ['password', '123456', 'admin', 'root']:
+            warnings.warn(
+                "Password appears to be a common weak password. "
+                "Use a strong, unique password for better security."
+            )
+
         # Generate Basic auth header if not already provided
         if not self.auth:
             # Combine username and password with colon separator
-            credentials = f"{self.user}:{self.password}"
+            credentials: CredentialsString = f"{self.user}:{self.password}"
             # Encode credentials in base64 as required by RFC 7617
-            encoded = base64.b64encode(credentials.encode()).decode()
+            encoded: Base64EncodedString = base64.b64encode(credentials.encode()).decode()
             # Create complete authorization header
             self.auth = f"Basic {encoded}"
 
@@ -75,17 +108,31 @@ class Guest:
              requiring authentication credentials.
     """
 
-    key: str
+    key: GuestKey
 
     def __post_init__(self) -> None:
         """
         Initialize guest authentication configuration.
 
-        For guest users, no additional processing is needed as the
-        key attribute directly contains the X-Forwarded-Key value
-        that describes this anonymous user.
+        Validates the guest key and provides warnings for potential
+        security or identification issues with anonymous access.
 
         Returns:
             None
         """
-        pass
+        # Validate guest key
+        if not self.key.strip():
+            raise ValueError("Guest key cannot be empty or whitespace")
+
+        # Security warnings for guest access
+        if len(self.key) < 3:
+            warnings.warn(
+                "Guest key is very short. "
+                "Consider using a more descriptive identifier."
+            )
+
+        if self.key.lower() in ['guest', 'anonymous', 'test', 'default']:
+            warnings.warn(
+                "Guest key appears to be a generic identifier. "
+                "Consider using a more specific identifier for better tracking."
+            )

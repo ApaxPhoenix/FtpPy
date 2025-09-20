@@ -39,7 +39,6 @@ __all__ = [
     # Core functionality
     "FtpServer",
     "FtpClient",
-    "FtpOperationResult",
     # Configuration options
     "Timeout",
     "Retry",

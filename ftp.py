@@ -10,10 +10,10 @@ from typing import (
 )
 from urllib.parse import urlparse
 from aiohttp import web
-from .core import FtpServer, FtpClient
-from .auth import Basic
-from .config import Retry, Limits, Timeout
-from .settings import SSL
+from core import FtpServer, FtpClient
+from auth import Basic
+from config import Retry, Limits, Timeout
+from settings import SSL
 
 # Enhanced type definitions for improved type safety and clarity
 T = TypeVar("T")

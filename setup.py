@@ -11,12 +11,8 @@ setup(
     version="1.0.0",
     author="Andrew Hernandez",
     author_email="andromedeyz@hotmail.com",
-    description="A high-performance async FTP client and server library for Python with connection pooling, SSL support, and automatic retry logic.",
-    long_description=(
-        open("README.md", "r", encoding="utf-8").read()
-        if Path("README.md").exists()
-        else "FtpPy is a high-performance, asynchronous FTP client and server library for Python. Built with modern async/await patterns, it excels in file transfer operations, backup automation, and directory synchronization with support for both FTP and secure FTPS protocols."
-    ),
+    description="An efficient FTP client and server library in Python with robust connection management for reliable and streamlined file transfer operations.",
+    long_description=open("README.md", "r").read(),
     long_description_content_type="text/markdown",
     url="http://github.com/ApaxPhoenix/FtpPy",
     project_urls={
@@ -39,10 +35,7 @@ setup(
         "Topic :: System :: Networking",
     ],
     python_requires=">=3.9",
-    install_requires=[
-        "aioftp>=0.21.0",
-        "aiohttp>=3.8.0",
-    ],
+    install_requires=open("requirements.txt").readlines(),
     keywords="ftp, async, file transfer, networking, ssl, tls, server, client",
     license="MIT",
     zip_safe=False,  # Set to False for packages with data files or C extensions

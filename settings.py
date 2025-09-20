@@ -1,8 +1,17 @@
 import ssl
 import warnings
 from dataclasses import dataclass
-from typing import Optional, Union
+from typing import Optional, Union, TypeVar
 from pathlib import Path
+
+# Enhanced type definitions for improved type safety and clarity
+T = TypeVar("T")
+SSLType = TypeVar("SSLType", bound="SSL")
+CertificatePath = str
+PrivateKeyPath = str
+CABundlePath = str
+CipherSuiteString = str
+SSLContextType = Union[ssl.SSLContext, bool, None]
 
 
 @dataclass
@@ -36,13 +45,11 @@ class SSL:
     """
 
     verify: bool = True  # Whether to verify SSL certificates against trusted CAs
-    cert: Optional[str] = None  # Path to client certificate file for mutual TLS
-    key: Optional[str] = None  # Path to client private key file for mutual TLS
-    bundle: Optional[str] = None  # Path to custom CA bundle file for verification
-    ciphers: Optional[str] = None  # Allowed SSL cipher suites string
-    context: Optional[Union[ssl.SSLContext, bool]] = (
-        None  # SSL context or False to disable
-    )
+    cert: Optional[CertificatePath] = None  # Path to client certificate file for mutual TLS
+    key: Optional[PrivateKeyPath] = None  # Path to client private key file for mutual TLS
+    bundle: Optional[CABundlePath] = None  # Path to custom CA bundle file for verification
+    ciphers: Optional[CipherSuiteString] = None  # Allowed SSL cipher suites string
+    context: SSLContextType = None  # SSL context or False to disable
 
     def __post_init__(self) -> None:
         """
@@ -73,7 +80,7 @@ class SSL:
 
         # Validate certificate file existence and readability
         if self.cert:
-            path = Path(self.cert)
+            path: Path = Path(self.cert)
             if not path.exists():
                 raise ValueError(f"Certificate file not found: {self.cert}")
             if not path.is_file():
@@ -137,7 +144,7 @@ class SSL:
 
         # Create SSL context with secure default settings for advanced configuration
         try:
-            ctx = ssl.create_default_context()
+            ctx: ssl.SSLContext = ssl.create_default_context()
         except ssl.SSLError as error:
             raise ValueError(f"Failed to create default SSL context: {error}")
 
