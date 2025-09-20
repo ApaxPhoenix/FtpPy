@@ -15,7 +15,7 @@ setup(
     long_description=(
         open("README.md", "r", encoding="utf-8").read()
         if Path("README.md").exists()
-        else "FtpPy takes the pain out of FTP transfers. Whether you're building a file sync app or managing a server, this library handles the tricky stuff so you don't have to. Get async transfers, smart connection pooling, SSL encryption, and even a web interface - all with clean, simple Python code."
+        else "FtpPy is a high-performance, asynchronous FTP client and server library for Python. Built with modern async/await patterns, it excels in file transfer operations, backup automation, and directory synchronization with support for both FTP and secure FTPS protocols."
     ),
     long_description_content_type="text/markdown",
     url="http://github.com/ApaxPhoenix/FtpPy",
