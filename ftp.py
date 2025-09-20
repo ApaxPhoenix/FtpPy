@@ -10,15 +10,15 @@ from typing import (
 )
 from urllib.parse import urlparse
 from aiohttp import web
-from core import FTPServer, FTPClient
+from core import FtpServer, FtpClient
 from auth import Basic
 from config import Retry, Limits, Timeout
 from settings import SSL
 
 # Enhanced type definitions for improved type safety and clarity
 T = TypeVar("T")
-ClientType = TypeVar("ClientType", bound="FTPClient")
-ServerType = TypeVar("ServerType", bound="FTPServer")
+ClientType = TypeVar("ClientType", bound="FtpClient")
+ServerType = TypeVar("ServerType", bound="FtpServer")
 HandlerType = Callable[[web.Request], Awaitable[web.Response]]
 ErrorHandlerType = Callable[[Optional[web.Request], web.Response], Awaitable[None]]
 HookType = Callable[..., Awaitable[Any]]
@@ -110,13 +110,13 @@ class FtpPy(Generic[ClientType, ServerType]):
         if self.auth and not isinstance(self.auth, Basic):
             raise ValueError("FTP only supports Basic authentication")
 
-    def server(self) -> "FTPServer":
+    def server(self) -> "FtpServer":
         """Create an FTP server using the same configuration.
 
         Returns:
-            FTPServer: Ready-to-start server instance
+            FtpServer: Ready-to-start server instance
         """
-        return FTPServer(
+        return FtpServer(
             endpoint=self.endpoint,
             auth=self.auth,
             limits=self.limits,
@@ -128,13 +128,13 @@ class FtpPy(Generic[ClientType, ServerType]):
             encoding=self.encoding,
         )
 
-    def client(self) -> "FTPClient":
+    def client(self) -> "FtpClient":
         """Create an FTP client using the same configuration.
 
         Returns:
-            FTPClient: Ready-to-connect client instance
+            FtpClient: Ready-to-connect client instance
         """
-        return FTPClient(
+        return FtpClient(
             endpoint=self.endpoint,
             auth=self.auth,
             limits=self.limits,
