@@ -13,7 +13,6 @@ from typing import (
     List,
     Tuple,
     TypeVar,
-    Generic,
     Any,
     Awaitable,
 )
@@ -36,15 +35,6 @@ AuthType = TypeVar("AuthType", bound=Basic)
 ConfigType = TypeVar("ConfigType")
 RouteResult = Tuple[HandlerType, Dict[str, Any]]
 GenericFunction = TypeVar("GenericFunction", bound=Callable)
-
-
-class FtpOperationResult(Generic[T]):
-    """Container for FTP operation results with type safety."""
-
-    def __init__(self, success: bool, data: T, error: Optional[Exception] = None):
-        self.success = success
-        self.data = data
-        self.error = error
 
 
 class FtpServer:
@@ -112,7 +102,7 @@ class FtpServer:
         self.server: Optional[aioftp.Server] = None
         self.path: Path = Path.home()  # Default to user's home directory
 
-    async def start(self) -> FtpOperationResult[aioftp.Server]:
+    async def start(self) -> aioftp.Server:
         """Fire up the FTP server and get it ready to handle connections.
 
         This does all the heavy lifting - sets up users and permissions, configures SSL
@@ -121,7 +111,7 @@ class FtpServer:
         disconnects won't crash your server.
 
         Returns:
-            FtpOperationResult: The server instance if successful, error details if not
+            aioftp.Server: The server instance
 
         Raises:
             RuntimeError: When the server can't start (usually port conflicts)
@@ -211,7 +201,7 @@ class FtpServer:
                 except Exception as error:
                     warnings.warn(f"Start hook failed: {error}")
 
-            return FtpOperationResult(True, self.server)
+            return self.server
 
         except OSError as error:
             # Handle common port binding errors with clear messages
@@ -222,15 +212,15 @@ class FtpServer:
         except Exception as error:
             raise RuntimeError(f"Failed to start FTP server: {error}")
 
-    async def stop(self) -> FtpOperationResult[None]:
+    async def stop(self) -> None:
         """Shut down the FTP server cleanly without leaving connections hanging.
 
         This closes all active connections, runs any cleanup hooks you've set up,
         and makes sure everything stops gracefully. It won't throw errors if the
         server is already stopped.
 
-        Returns:
-            FtpOperationResult: Success status and any error details
+        Raises:
+            RuntimeError: If there's an error during shutdown that can't be handled
         """
         if self.server:
             try:
@@ -243,14 +233,11 @@ class FtpServer:
                     except Exception as error:
                         warnings.warn(f"Stop hook failed: {error}")
 
-                return FtpOperationResult(True, None)
             except Exception as error:
                 warnings.warn(f"Error stopping FTP server: {error}")
-                return FtpOperationResult(False, None, error)
+                raise RuntimeError(f"Failed to stop FTP server: {error}")
             finally:
                 self.server = None
-
-        return FtpOperationResult(True, None)
 
     async def __aenter__(self) -> "FtpServer":
         """Start everything up when you use this in an async with statement.
