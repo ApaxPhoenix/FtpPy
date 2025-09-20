@@ -2,7 +2,7 @@ __version__ = "1.0.0"
 __author__ = "Andrew Hernandez"
 __email__ = "andromedeyz@hotmail.com"
 __license__ = "MIT"
-__description__ = "Make FTP transfers simple and fast with async support, automatic retries, secure connections, and built-in web management."
+__description__ = "A high-performance async FTP client and server library for Python with connection pooling, SSL support, and automatic retry logic."
 __url__ = "http://github.com/ApaxPhoenix/FtpPy"
 
 # The main FtpPy class - your one-stop shop for creating FTP clients and servers
@@ -12,7 +12,6 @@ from .ftp import FtpPy
 from .core import (
     FtpServer,  # Run your own FTP server with a built-in web interface
     FtpClient,  # Connect to FTP servers with smart connection management
-    FtpOperationResult,  # Clean way to handle success and error responses
 )
 
 # Fine-tune how your FTP connections behave
