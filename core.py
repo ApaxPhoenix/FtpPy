@@ -20,9 +20,9 @@ from urllib.parse import urlparse
 import aioftp
 from aioftp import Client
 from aiohttp import web
-from auth import Basic
-from config import Retry, Limits, Timeout
-from settings import SSL
+from .auth import Basic
+from .config import Retry, Limits, Timeout
+from .settings import SSL
 
 # Enhanced type definitions for improved type safety and clarity
 T = TypeVar("T")
