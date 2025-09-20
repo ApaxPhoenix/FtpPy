@@ -11,7 +11,7 @@ setup(
     version="1.0.0",
     author="Andrew Hernandez",
     author_email="andromedeyz@hotmail.com",
-    description="Make FTP transfers simple and fast with async support, automatic retries, secure connections, and built-in web management.",
+    description="A high-performance async FTP client and server library for Python with connection pooling, SSL support, and automatic retry logic.",
     long_description=(
         open("README.md", "r", encoding="utf-8").read()
         if Path("README.md").exists()
